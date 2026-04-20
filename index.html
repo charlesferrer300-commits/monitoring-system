@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Door Lock and Room Temperature Monitoring System</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="app">
+    <section class="header">
+        <div>
+            <div class="badge">Networking Major Project</div>
+            <h1>Smart Door Lock and Room Temperature Monitoring System</h1>
+            <p>
+                This version treats the smart door lock and room temperature sensor as networked devices.
+                The dashboard is built more like a small NOC view, showing controller health, node status,
+                packet flow, latency, and environmental telemetry in one place.
+            </p>
+        </div>
+
+        <div class="header-side">
+            <div class="side-box">
+                <div class="tiny-label">Controller Time</div>
+                <div class="side-value" id="clock">--</div>
+                <div class="side-note" id="dateLabel">--</div>
+            </div>
+
+            <div class="side-box">
+                <div class="tiny-label">Network Status</div>
+                <div class="side-value" id="statusBadge">Network Healthy</div>
+                <div class="side-note">Edge devices are active and telemetry is flowing normally.</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="metrics">
+        <article class="metric-card">
+            <div class="tiny-label">Door Node</div>
+            <div class="metric-value" id="doorNodeMetric">Locked</div>
+            <div class="pill green" id="doorNodeHint">Edge device responding</div>
+        </article>
+
+        <article class="metric-card">
+            <div class="tiny-label">Sensor Node</div>
+            <div class="metric-value" id="sensorMetric">98% signal</div>
+            <div class="pill blue">Heartbeat online</div>
+        </article>
+
+        <article class="metric-card">
+            <div class="tiny-label">Latency</div>
+            <div class="metric-value" id="latencyMetric">12 ms</div>
+            <div class="pill yellow" id="latencyHint">Controller path stable</div>
+        </article>
+
+        <article class="metric-card">
+            <div class="tiny-label">Packet Rate</div>
+            <div class="metric-value" id="packetMetric">118 pkt/s</div>
+            <div class="pill blue">Normal traffic volume</div>
+        </article>
+    </section>
+
+    <section class="main-grid">
+        <div class="left-stack">
+            <article class="card">
+                <h2>IoT Network Topology</h2>
+                <div class="topology">
+                    <div class="topology-grid">
+                        <div class="node controller">
+                            <strong>Controller</strong>
+                            <small id="controllerState">96% health</small>
+                        </div>
+                        <div class="node connected">
+                            <strong>Door Node</strong>
+                            <small id="doorNodeState">Locked</small>
+                        </div>
+                        <div class="node connected">
+                            <strong>Sensor Node</strong>
+                            <small id="sensorNodeState">98% signal</small>
+                        </div>
+                        <div class="node connected">
+                            <strong>Client Panel</strong>
+                            <small>Monitoring console</small>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card">
+                <h2>Environmental and Traffic Telemetry</h2>
+                <div class="telemetry-grid">
+                    <div class="telemetry-box">
+                        <span class="tiny-label">Room Temp</span>
+                        <strong id="roomTemp">24.8 C</strong>
+                    </div>
+                    <div class="telemetry-box">
+                        <span class="tiny-label">Humidity</span>
+                        <strong id="humidity">47%</strong>
+                    </div>
+                    <div class="telemetry-box">
+                        <span class="tiny-label">Trend</span>
+                        <strong id="trendValue">Stable</strong>
+                    </div>
+                    <div class="telemetry-box">
+                        <span class="tiny-label">Cooling Advice</span>
+                        <strong id="coolingAdvice">Environment is within target range</strong>
+                    </div>
+                    <div class="telemetry-box">
+                        <span class="tiny-label">Network Health</span>
+                        <strong id="networkHealth">96%</strong>
+                    </div>
+                    <div class="telemetry-box">
+                        <span class="tiny-label">Last Update</span>
+                        <strong id="lastUpdate">--</strong>
+                    </div>
+                </div>
+
+                <div class="chart" id="chart"></div>
+                <div class="chart-legend">
+                    <span><span class="legend-dot" style="background:#38bdf8;"></span>Temperature</span>
+                    <span><span class="legend-dot" style="background:#f59e0b;"></span>Latency</span>
+                </div>
+            </article>
+        </div>
+
+        <div class="right-stack">
+            <article class="card">
+                <h2>Access Control Node</h2>
+                <div class="pill green" id="doorBadge">Locked</div>
+                <div class="door-frame">
+                    <div class="door-panel" id="doorPanel">
+                        <div class="door-handle"></div>
+                    </div>
+                </div>
+                <p class="side-note" id="doorNodeNote">Edge lock node is waiting for authenticated commands.</p>
+                <div class="button-row">
+                    <button class="btn-primary" id="unlockBtn">Unlock Node</button>
+                    <button class="btn-danger" id="lockBtn">Lock Node</button>
+                    <button class="btn-soft" id="pollBtn">Poll Devices</button>
+                </div>
+            </article>
+
+            <article class="card">
+                <h2>Event Log</h2>
+                <div class="log-list" id="eventLog"></div>
+            </article>
+
+            <article class="card">
+                <h2>Operations Summary</h2>
+                <div class="summary-list" id="summaryList"></div>
+            </article>
+        </div>
+    </section>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
