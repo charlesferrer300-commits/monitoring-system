@@ -1,0 +1,7 @@
+{
+  "name": "SmartHomeMonitor",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

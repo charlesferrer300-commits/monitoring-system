@@ -1,0 +1,10 @@
+node_modules/
+.angular/
+.ionic/
+www/
+dist/
+platforms/
+plugins/
+.git/
+.vscode/
+*.log
