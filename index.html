@@ -53,12 +53,23 @@
 
         <!-- Tab Content: Climate (History) -->
         <section id="tab-climate" class="tab-content">
+            <!-- Smoke Alert Card (Hidden by default) -->
+            <div id="smokeAlertCard" class="card" style="display:none; border: 2px solid var(--danger); background: var(--success-soft); animation: pulse 2s infinite;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <span style="font-size:24px;">💨</span>
+                    <div>
+                        <h2 style="margin:0; color:var(--danger); font-size:1rem;">SMOKE DETECTED</h2>
+                        <p style="margin:4px 0 0 0; font-size:13px; color:var(--text);">Fire suppression protocols active.</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <h2>Temperature History</h2>
                 <div class="chart" id="chart"></div>
                 <div class="chart-legend">
                     <span><span class="legend-dot" style="background:#38bdf8;"></span>Room Temp</span>
-                    <span><span class="legend-dot" style="background:#f59e0b;"></span>Response Time</span>
+                    <span><span class="legend-dot" style="background:#f43f5e;"></span>Safety Threshold (45°C)</span>
                 </div>
             </div>
 
