@@ -51,7 +51,7 @@ ion-content {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 30px 20px;
+    padding: calc(30px + env(safe-area-inset-top)) 20px 30px 20px;
     background: linear-gradient(180deg, var(--surface) 0%, transparent 100%);
 }
 
@@ -207,13 +207,13 @@ button:active { transform: scale(0.96); }
     bottom: 0;
     left: 0;
     right: 0;
-    height: 85px;
+    height: calc(85px + env(safe-area-inset-bottom));
     background: rgba(15, 27, 45, 0.98);
     backdrop-filter: blur(15px);
     border-top: 1px solid var(--border);
     display: flex;
     justify-content: space-around;
-    padding: 10px 10px 25px 10px;
+    padding: 10px 10px calc(25px + env(safe-area-inset-bottom)) 10px;
     z-index: 1000;
 }
 
