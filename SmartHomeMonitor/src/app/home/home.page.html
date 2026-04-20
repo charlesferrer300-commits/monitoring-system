@@ -28,18 +28,12 @@
           </div>
         </div>
         
-        <div class="control-actions">
-          <button class="btn-primary" 
+        <div class="control-actions" style="display: block;">
+          <button [class]="deviceService.isLocked() ? 'btn-primary full-width' : 'btn-danger full-width'" 
                   [disabled]="deviceService.isAlarming()" 
                   [style.opacity]="deviceService.isAlarming() ? 0.5 : 1"
                   (click)="deviceService.toggleLock()">
-            Unlock Door
-          </button>
-          <button class="btn-danger" 
-                  [disabled]="deviceService.isAlarming()" 
-                  [style.opacity]="deviceService.isAlarming() ? 0.5 : 1"
-                  (click)="deviceService.toggleLock()">
-            Lock Door
+            {{ deviceService.isLocked() ? '🔓 Tap to Unlock' : '🔒 Tap to Lock' }}
           </button>
         </div>
         <p class="hint-text" [style.color]="deviceService.isAlarming() ? 'var(--danger)' : 'var(--text-muted)'">

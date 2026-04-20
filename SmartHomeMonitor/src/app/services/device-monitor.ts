@@ -32,6 +32,7 @@ export class DeviceMonitorService {
   private bc = new BroadcastChannel('iot_simulation');
 
   constructor(private sirenService: SirenService) {
+    // FIREBASE READY: This is where we will call this.setupFirebaseListeners() in Phase 4
     this.setupSimulationListener();
     
     // Auto-update data loop
@@ -47,6 +48,16 @@ export class DeviceMonitorService {
         document.body.classList.remove('emergency-mode');
       }
     });
+  }
+
+  // PHASE 4 PLACEHOLDER: Ready to plug in Firebase SDK
+  private setupFirebaseListeners() {
+    /*
+      onValue(ref(db, 'devices/frontDoor/isLocked'), (snapshot) => {
+        this.isLocked.set(snapshot.val());
+      });
+      ... and so on for temperature, smoke, etc.
+    */
   }
 
   private setupSimulationListener() {
