@@ -21,6 +21,10 @@ This is an **Ionic Angular (Standalone)** mobile application for monitoring a Sm
 - `src/app/home/home.page.html/ts`: Main UI and chart rendering logic.
 - `src/global.scss`: Application-wide design system and variables.
 
+## Project Structure
+- `/src`: Ionic Angular source code.
+- `/legacy-prototype`: Original static prototype files.
+
 ## Current Phase: 4 (Firebase Integration & Push Notifications - IN PROGRESS)
 - UI Porting: COMPLETED.
 - Signals Integration: COMPLETED.
