@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardware Simulator - ESP32 Control</title>
+    <style>
+        body { font-family: sans-serif; background: #1a1a1a; color: white; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .card { background: #2a2a2a; padding: 20px; border-radius: 12px; border: 1px solid #444; width: 100%; max-width: 400px; margin-bottom: 20px; }
+        h1 { font-size: 1.2rem; margin-top: 0; color: #38bdf8; }
+        .input-group { margin: 20px 0; }
+        label { display: block; margin-bottom: 10px; font-size: 0.9rem; color: #aaa; }
+        input[type="range"] { width: 100%; cursor: pointer; }
+        .value-display { font-size: 2rem; font-weight: bold; margin: 10px 0; }
+        .btn { padding: 12px 20px; border-radius: 8px; border: 0; font-weight: bold; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn-fire { background: #f43f5e; color: white; }
+        .btn-fire.active { background: #881337; box-shadow: 0 0 20px #f43f5e; }
+        .btn-reset { background: #444; color: white; margin-top: 10px; }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; background: #333; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Temperature Sensor Simulation</h1>
+        <p style="font-size: 0.8rem; color: #888;">Slide to simulate ESP32 temperature readings. At 45°C, the app will trigger an Emergency Unlock.</p>
+        
+        <div class="input-group">
+            <label>Environment Temperature (°C)</label>
+            <input type="range" id="tempRange" min="20" max="60" value="24" step="0.5">
+            <div class="value-display"><span id="tempVal">24.0</span>°C</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h1>Gas/Smoke Sensor Simulation</h1>
+        <button id="smokeBtn" class="btn btn-fire">ACTIVATE SMOKE SENSOR</button>
+        <button id="resetBtn" class="btn btn-reset">RESET SYSTEM</button>
+        <div id="status" class="status-badge">Simulator Connected</div>
+    </div>
+
+    <script>
+        const bc = new BroadcastChannel('iot_simulation');
+        const tempRange = document.getElementById('tempRange');
+        const tempVal = document.getElementById('tempVal');
+        const smokeBtn = document.getElementById('smokeBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        let smokeActive = false;
+
+        tempRange.addEventListener('input', (e) => {
+            const val = e.target.value;
+            tempVal.textContent = parseFloat(val).toFixed(1);
+            bc.postMessage({ type: 'TEMP_CHANGE', value: val });
+        });
+
+        smokeBtn.addEventListener('click', () => {
+            smokeActive = !smokeActive;
+            smokeBtn.textContent = smokeActive ? 'SMOKE DETECTED!' : 'ACTIVATE SMOKE SENSOR';
+            smokeBtn.classList.toggle('active', smokeActive);
+            bc.postMessage({ type: 'SMOKE_DETECTED', value: smokeActive });
+        });
+
+        resetBtn.addEventListener('click', () => {
+            smokeActive = false;
+            smokeBtn.textContent = 'ACTIVATE SMOKE SENSOR';
+            smokeBtn.classList.remove('active');
+            tempRange.value = 24;
+            tempVal.textContent = "24.0";
+            bc.postMessage({ type: 'TEMP_CHANGE', value: 24 });
+            bc.postMessage({ type: 'SMOKE_DETECTED', value: false });
+        });
+    </script>
+</body>
+</html>
