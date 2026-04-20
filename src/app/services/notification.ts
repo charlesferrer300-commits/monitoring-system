@@ -24,7 +24,8 @@ export class NotificationService {
     }
 
     // Register with Apple / Google to receive push via APNS/FCM
-    await PushNotifications.register();
+    // TEMPORARILY DISABLED: Requires google-services.json to prevent Android crash
+    // await PushNotifications.register();
 
     // Listen for incoming notifications (foreground)
     PushNotifications.addListener('pushNotificationReceived', (notification) => {
