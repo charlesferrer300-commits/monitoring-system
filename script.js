@@ -1,25 +1,39 @@
+// State management
 let isLocked = true;
 let temperature = 24.8;
 let humidity = 47;
-let packetRate = 118;
 let latencyMs = 12;
 let signalStrength = 98;
 let networkHealth = 96;
-let entriesToday = 14;
 
 const temperatureHistory = [24.2, 24.5, 24.8, 25.0, 25.2, 24.9, 24.7, 24.8, 25.1, 25.0, 24.9, 24.8];
 const latencyHistory = [10, 12, 11, 13, 12, 14, 11, 12, 13, 12, 11, 12];
 
 const logs = [
-    { text: "Edge lock node acknowledged secure state", time: "08:42 AM" },
-    { text: "Temperature sensor heartbeat received", time: "08:31 AM" },
-    { text: "Authorized unlock packet accepted", time: "08:15 AM" },
-    { text: "Monitoring controller initialized", time: "07:30 AM" }
+    { text: "System secured by user", time: "08:42 AM" },
+    { text: "Environment sensor updated", time: "08:31 AM" },
+    { text: "Door unlocked via Mobile App", time: "08:15 AM" },
+    { text: "System started successfully", time: "07:30 AM" }
 ];
 
-function el(id) {
-    return document.getElementById(id);
-}
+// UI Elements Helper
+const el = (id) => document.getElementById(id);
+
+// Tab Switching Logic
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Update Buttons
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Update Content
+        const targetTab = btn.getAttribute('data-tab');
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        el(`tab-${targetTab}`).classList.add('active');
+    });
+});
 
 function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
@@ -29,134 +43,79 @@ function nowString() {
     return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-function updateClock() {
-    const now = new Date();
-    el("clock").textContent = now.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-    });
-    el("dateLabel").textContent = now.toLocaleDateString([], {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        year: "numeric"
-    });
-}
-
-function roomState() {
-    if (temperature > 27) return "Warm";
-    if (temperature < 23) return "Cool";
-    return "Normal";
-}
-
-function trend() {
-    const previous = temperatureHistory[temperatureHistory.length - 2];
-    if (temperature > previous) return "Rising slightly";
-    if (temperature < previous) return "Cooling slightly";
-    return "Stable";
-}
-
-function coolingAdvice() {
-    if (temperature > 27) return "Increase ventilation on sensor subnet";
-    if (temperature < 23) return "No cooling action needed";
-    return "Environment is within target range";
-}
-
 function addLog(text) {
     logs.unshift({ text, time: nowString() });
-    logs.splice(10);
+    if (logs.length > 8) logs.pop();
     renderLogs();
 }
 
 function renderLogs() {
-    el("eventLog").innerHTML = logs.map(item => `
+    const logContainer = el("eventLog");
+    if (!logContainer) return;
+    logContainer.innerHTML = logs.map(item => `
         <div class="log-item">
             <div>
                 <strong>${item.text}</strong>
-                <small>Network operations event</small>
             </div>
             <div class="stamp">${item.time}</div>
         </div>
     `).join("");
 }
 
-function renderSummary() {
-    const items = [
-        ["Lock Mode", isLocked ? "Secure" : "Temporarily open"],
-        ["Sensor State", "Online"],
-        ["Room State", roomState()],
-        ["Temperature Trend", trend()],
-        ["Latency", `${latencyMs} ms`],
-        ["Last Action", logs[0]?.text || "No recent events"]
-    ];
+function renderUI() {
+    // Status Text
+    el("statusGreeting").textContent = isLocked ? "Home is Secure" : "Front Door is Open";
+    el("globalStatusDot").className = `status-dot ${networkHealth > 90 ? 'green' : 'yellow'}`;
+    el("globalStatusText").textContent = networkHealth > 90 ? 'Connected' : 'Checking...';
 
-    el("summaryList").innerHTML = items.map(([label, value]) => `
-        <div class="summary-item">
-            <small>${label}</small>
-            <strong>${value}</strong>
-        </div>
-    `).join("");
-}
-
-function renderTopology() {
-    el("doorNodeState").textContent = isLocked ? "Locked" : "Unlocked";
-    el("sensorNodeState").textContent = `${signalStrength}% signal`;
-    el("controllerState").textContent = `${networkHealth}% health`;
-}
-
-function renderTelemetry() {
-    el("roomTemp").textContent = `${temperature.toFixed(1)} C`;
-    el("humidity").textContent = `${humidity}%`;
-    el("trendValue").textContent = trend();
-    el("coolingAdvice").textContent = coolingAdvice();
-    el("networkHealth").textContent = `${networkHealth}%`;
-    el("lastUpdate").textContent = new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-    });
-}
-
-function renderMetrics() {
-    el("doorNodeMetric").textContent = isLocked ? "Locked" : "Unlocked";
-    el("doorNodeHint").textContent = isLocked ? "Edge device responding" : "Access session active";
-    el("sensorMetric").textContent = `${signalStrength}% signal`;
-    el("latencyMetric").textContent = `${latencyMs} ms`;
-    el("latencyHint").textContent = latencyMs <= 18 ? "Controller path stable" : "Delay is increasing";
-    el("packetMetric").textContent = `${packetRate} pkt/s`;
-    el("statusBadge").textContent = networkHealth >= 90 ? "Network Healthy" : "Network Warning";
-}
-
-function renderDoorPanel() {
+    // Door Panel
     const badge = el("doorBadge");
     badge.textContent = isLocked ? "Locked" : "Unlocked";
     badge.className = `pill ${isLocked ? "green" : "yellow"}`;
     el("doorPanel").classList.toggle("unlocked", !isLocked);
-    el("doorNodeNote").textContent = isLocked
-        ? "Edge lock node is waiting for authenticated commands."
-        : "Edge lock node is currently allowing access traffic.";
+    el("doorNodeNote").textContent = isLocked 
+        ? "The door is currently locked and secure."
+        : "The door is open. Please close it when done.";
+
+    // Quick Stats
+    el("roomTemp").textContent = `${temperature.toFixed(1)}°C`;
+    el("humidity").textContent = `${humidity}%`;
+
+    // Devices & System
+    el("doorNodeState").textContent = isLocked ? "Locked" : "Unlocked";
+    el("sensorNodeState").textContent = signalStrength > 92 ? "Excellent Signal" : "Weak Signal";
+    el("networkHealth").textContent = networkHealth > 90 ? "Excellent" : "Stable";
+    el("latencyMetric").textContent = `${latencyMs} ms`;
+
+    // Cooling Advice
+    let advice = "Environment is within target range.";
+    if (temperature > 27) advice = "Room is warm. Consider ventilation.";
+    if (temperature < 23) advice = "Room is cool. Heating is optional.";
+    el("coolingAdvice").textContent = advice;
+
+    renderCharts();
 }
 
 function renderCharts() {
-    el("chart").innerHTML = temperatureHistory.map((value, index) => {
-        const tempHeight = clamp(((value - 22) / 8) * 120 + 24, 18, 144);
-        const latencyHeight = clamp((latencyHistory[index] / 30) * 120 + 18, 18, 144);
+    const chart = el("chart");
+    if (!chart) return;
+    chart.innerHTML = temperatureHistory.map((value, index) => {
+        const tempHeight = clamp(((value - 22) / 8) * 100, 10, 100);
+        const latencyHeight = clamp((latencyHistory[index] / 30) * 100, 10, 100);
         return `
-            <div style="display:grid;gap:6px;align-items:end;">
-                <span class="chart-bar temp" style="height:${tempHeight}px"></span>
-                <span class="chart-bar latency" style="height:${latencyHeight}px"></span>
+            <div style="display:grid;gap:4px;align-items:end;height:100%;">
+                <span class="chart-bar temp" style="height:${tempHeight}%"></span>
+                <span class="chart-bar latency" style="height:${latencyHeight}%"></span>
             </div>
         `;
     }).join("");
 }
 
 function updateData() {
-    temperature = clamp(Number((temperature + (Math.random() * 0.9 - 0.4)).toFixed(1)), 22.0, 29.5);
+    temperature = clamp(Number((temperature + (Math.random() * 0.6 - 0.3)).toFixed(1)), 22.0, 29.5);
     humidity = clamp(Math.round(humidity + (Math.random() * 4 - 2)), 40, 62);
-    packetRate = clamp(Math.round(packetRate + (Math.random() * 26 - 12)), 80, 180);
-    latencyMs = clamp(Math.round(latencyMs + (Math.random() * 5 - 2)), 7, 28);
-    signalStrength = clamp(Math.round(signalStrength + (Math.random() * 3 - 2)), 86, 100);
+    latencyMs = clamp(Math.round(latencyMs + (Math.random() * 4 - 2)), 7, 28);
+    signalStrength = clamp(Math.round(signalStrength + (Math.random() * 2 - 1)), 86, 100);
     networkHealth = clamp(Math.round((signalStrength + (100 - latencyMs)) / 2), 78, 99);
 
     temperatureHistory.push(temperature);
@@ -164,46 +123,36 @@ function updateData() {
     latencyHistory.push(latencyMs);
     latencyHistory.shift();
 
-    renderMetrics();
-    renderTopology();
-    renderTelemetry();
-    renderDoorPanel();
-    renderSummary();
-    renderCharts();
+    renderUI();
 }
 
-function unlockNode() {
+// Button Events
+el("unlockBtn").addEventListener("click", () => {
     if (!isLocked) {
-        addLog("Unlock packet rejected because node was already open");
+        addLog("Door is already open");
         return;
     }
     isLocked = false;
-    entriesToday += 1;
-    addLog("Authorized unlock packet accepted by edge lock node");
-    updateData();
-}
+    addLog("Door unlocked via Mobile App");
+    renderUI();
+});
 
-function lockNode() {
+el("lockBtn").addEventListener("click", () => {
     if (isLocked) {
-        addLog("Lock command ignored because node was already secure");
+        addLog("Door is already secure");
         return;
     }
     isLocked = true;
-    addLog("Secure-state packet committed to edge lock node");
+    addLog("Door locked via Mobile App");
+    renderUI();
+});
+
+el("pollBtn").addEventListener("click", () => {
+    addLog("Manual status refresh");
     updateData();
-}
+});
 
-function pollDevices() {
-    addLog("Manual device poll started from controller");
-    updateData();
-}
-
-el("unlockBtn").addEventListener("click", unlockNode);
-el("lockBtn").addEventListener("click", lockNode);
-el("pollBtn").addEventListener("click", pollDevices);
-
-updateClock();
+// Initialization
 renderLogs();
-updateData();
-setInterval(updateClock, 1000);
+renderUI();
 setInterval(updateData, 3000);

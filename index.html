@@ -1,157 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Door Lock and Room Temperature Monitoring System</title>
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart Home Monitor</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<main class="app">
-    <section class="header">
-        <div>
-            <div class="badge">Networking Major Project</div>
-            <h1>Smart Door Lock and Room Temperature Monitoring System</h1>
-            <p>
-                This version treats the smart door lock and room temperature sensor as networked devices.
-                The dashboard is built more like a small NOC view, showing controller health, node status,
-                packet flow, latency, and environmental telemetry in one place.
-            </p>
-        </div>
-
-        <div class="header-side">
-            <div class="side-box">
-                <div class="tiny-label">Controller Time</div>
-                <div class="side-value" id="clock">--</div>
-                <div class="side-note" id="dateLabel">--</div>
+    <main class="app">
+        <!-- Header: F-Pattern Top -->
+        <header class="main-header">
+            <div class="user-greeting">
+                <p class="tiny-label">Welcome Back</p>
+                <h1 id="statusGreeting">Home is Secure</h1>
             </div>
-
-            <div class="side-box">
-                <div class="tiny-label">Network Status</div>
-                <div class="side-value" id="statusBadge">Network Healthy</div>
-                <div class="side-note">Edge devices are active and telemetry is flowing normally.</div>
+            <div class="system-status">
+                <div class="status-dot green" id="globalStatusDot"></div>
+                <span id="globalStatusText">Connected</span>
             </div>
-        </div>
-    </section>
+        </header>
 
-    <section class="metrics">
-        <article class="metric-card">
-            <div class="tiny-label">Door Node</div>
-            <div class="metric-value" id="doorNodeMetric">Locked</div>
-            <div class="pill green" id="doorNodeHint">Edge device responding</div>
-        </article>
-
-        <article class="metric-card">
-            <div class="tiny-label">Sensor Node</div>
-            <div class="metric-value" id="sensorMetric">98% signal</div>
-            <div class="pill blue">Heartbeat online</div>
-        </article>
-
-        <article class="metric-card">
-            <div class="tiny-label">Latency</div>
-            <div class="metric-value" id="latencyMetric">12 ms</div>
-            <div class="pill yellow" id="latencyHint">Controller path stable</div>
-        </article>
-
-        <article class="metric-card">
-            <div class="tiny-label">Packet Rate</div>
-            <div class="metric-value" id="packetMetric">118 pkt/s</div>
-            <div class="pill blue">Normal traffic volume</div>
-        </article>
-    </section>
-
-    <section class="main-grid">
-        <div class="left-stack">
-            <article class="card">
-                <h2>IoT Network Topology</h2>
-                <div class="topology">
-                    <div class="topology-grid">
-                        <div class="node controller">
-                            <strong>Controller</strong>
-                            <small id="controllerState">96% health</small>
-                        </div>
-                        <div class="node connected">
-                            <strong>Door Node</strong>
-                            <small id="doorNodeState">Locked</small>
-                        </div>
-                        <div class="node connected">
-                            <strong>Sensor Node</strong>
-                            <small id="sensorNodeState">98% signal</small>
-                        </div>
-                        <div class="node connected">
-                            <strong>Client Panel</strong>
-                            <small>Monitoring console</small>
+        <!-- Tab Content: Home (Remote Control) -->
+        <section id="tab-home" class="tab-content active">
+            <div class="hero-card">
+                <div class="door-status-display">
+                    <div class="pill green" id="doorBadge">Locked</div>
+                    <div class="door-frame">
+                        <div class="door-panel" id="doorPanel">
+                            <div class="door-handle"></div>
                         </div>
                     </div>
                 </div>
-            </article>
-
-            <article class="card">
-                <h2>Environmental and Traffic Telemetry</h2>
-                <div class="telemetry-grid">
-                    <div class="telemetry-box">
-                        <span class="tiny-label">Room Temp</span>
-                        <strong id="roomTemp">24.8 C</strong>
-                    </div>
-                    <div class="telemetry-box">
-                        <span class="tiny-label">Humidity</span>
-                        <strong id="humidity">47%</strong>
-                    </div>
-                    <div class="telemetry-box">
-                        <span class="tiny-label">Trend</span>
-                        <strong id="trendValue">Stable</strong>
-                    </div>
-                    <div class="telemetry-box">
-                        <span class="tiny-label">Cooling Advice</span>
-                        <strong id="coolingAdvice">Environment is within target range</strong>
-                    </div>
-                    <div class="telemetry-box">
-                        <span class="tiny-label">Network Health</span>
-                        <strong id="networkHealth">96%</strong>
-                    </div>
-                    <div class="telemetry-box">
-                        <span class="tiny-label">Last Update</span>
-                        <strong id="lastUpdate">--</strong>
-                    </div>
+                
+                <div class="control-actions">
+                    <button class="btn-primary" id="unlockBtn">Unlock Door</button>
+                    <button class="btn-danger" id="lockBtn">Lock Door</button>
                 </div>
+                <p class="hint-text" id="doorNodeNote">The door is currently locked and secure.</p>
+            </div>
 
+            <div class="quick-stats">
+                <div class="mini-card">
+                    <span class="tiny-label">Room Temp</span>
+                    <h3 id="roomTemp">24.8°C</h3>
+                </div>
+                <div class="mini-card">
+                    <span class="tiny-label">Humidity</span>
+                    <h3 id="humidity">47%</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab Content: Climate (History) -->
+        <section id="tab-climate" class="tab-content">
+            <div class="card">
+                <h2>Temperature History</h2>
                 <div class="chart" id="chart"></div>
                 <div class="chart-legend">
-                    <span><span class="legend-dot" style="background:#38bdf8;"></span>Temperature</span>
-                    <span><span class="legend-dot" style="background:#f59e0b;"></span>Latency</span>
+                    <span><span class="legend-dot" style="background:#38bdf8;"></span>Room Temp</span>
+                    <span><span class="legend-dot" style="background:#f59e0b;"></span>Response Time</span>
                 </div>
-            </article>
-        </div>
+            </div>
 
-        <div class="right-stack">
-            <article class="card">
-                <h2>Access Control Node</h2>
-                <div class="pill green" id="doorBadge">Locked</div>
-                <div class="door-frame">
-                    <div class="door-panel" id="doorPanel">
-                        <div class="door-handle"></div>
+            <div class="card advice-card">
+                <span class="tiny-label">Smart Advice</span>
+                <p id="coolingAdvice">Everything looks good. No cooling action needed.</p>
+            </div>
+        </section>
+
+        <!-- Tab Content: Activity (Logs) -->
+        <section id="tab-activity" class="tab-content">
+            <div class="card">
+                <h2>Recent Activity</h2>
+                <div class="log-list" id="eventLog"></div>
+            </div>
+        </section>
+
+        <!-- Tab Content: Devices (Health) -->
+        <section id="tab-devices" class="tab-content">
+            <div class="card">
+                <h2>Linked Devices</h2>
+                <div class="device-list">
+                    <div class="device-item">
+                        <div class="device-info">
+                            <strong>Front Door Lock</strong>
+                            <small id="doorNodeState">Connected</small>
+                        </div>
+                        <div class="signal-strength green">Online</div>
+                    </div>
+                    <div class="device-item">
+                        <div class="device-info">
+                            <strong>Room Sensor</strong>
+                            <small id="sensorNodeState">Excellent Signal</small>
+                        </div>
+                        <div class="signal-strength green">98%</div>
                     </div>
                 </div>
-                <p class="side-note" id="doorNodeNote">Edge lock node is waiting for authenticated commands.</p>
-                <div class="button-row">
-                    <button class="btn-primary" id="unlockBtn">Unlock Node</button>
-                    <button class="btn-danger" id="lockBtn">Lock Node</button>
-                    <button class="btn-soft" id="pollBtn">Poll Devices</button>
+            </div>
+
+            <div class="card">
+                <h2>System Info</h2>
+                <div class="summary-list">
+                    <div class="summary-item">
+                        <small>Connection Quality</small>
+                        <strong id="networkHealth">Excellent</strong>
+                    </div>
+                    <div class="summary-item">
+                        <small>Response Time</small>
+                        <strong id="latencyMetric">12 ms</strong>
+                    </div>
                 </div>
-            </article>
+                <button class="btn-soft full-width" id="pollBtn" style="margin-top:15px;">Refresh Connection</button>
+            </div>
+        </section>
 
-            <article class="card">
-                <h2>Event Log</h2>
-                <div class="log-list" id="eventLog"></div>
-            </article>
-
-            <article class="card">
-                <h2>Operations Summary</h2>
-                <div class="summary-list" id="summaryList"></div>
-            </article>
-        </div>
-    </section>
-</main>
-<script src="script.js"></script>
+        <!-- Bottom Navigation Bar (Ionic Style) -->
+        <nav class="tab-bar">
+            <button class="tab-btn active" data-tab="home">
+                <span class="tab-icon">🏠</span>
+                <span class="tab-label">Home</span>
+            </button>
+            <button class="tab-btn" data-tab="climate">
+                <span class="tab-icon">🌡️</span>
+                <span class="tab-label">Climate</span>
+            </button>
+            <button class="tab-btn" data-tab="activity">
+                <span class="tab-icon">📋</span>
+                <span class="tab-label">Activity</span>
+            </button>
+            <button class="tab-btn" data-tab="devices">
+                <span class="tab-icon">⚙️</span>
+                <span class="tab-label">Devices</span>
+            </button>
+        </nav>
+    </main>
+    <script src="script.js"></script>
 </body>
 </html>
