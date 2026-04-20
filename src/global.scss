@@ -38,12 +38,13 @@
 /* Ensure ion-content background is transparent to show our body/main bg */
 ion-content {
   --background: var(--bg);
+  height: 100%;
 }
 
 .app {
-    padding-bottom: 100px; /* Space for fixed tab bar */
+    padding-bottom: calc(110px + env(safe-area-inset-bottom)); 
     background: var(--bg);
-    min-height: 100%;
+    min-height: 101%; /* Force a bit of extra height to ensure scrollability */
 }
 
 /* Header Port */
@@ -85,6 +86,7 @@ ion-content {
 /* Tab Content Visibility */
 .tab-content {
     padding: 0 20px;
+    display: block;
 }
 
 /* Door Visualization Fixes */
