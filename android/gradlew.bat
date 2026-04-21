@@ -19,12 +19,16 @@
 @if "%DEBUG%"=="" @echo off
 @rem ##########################################################################
 @rem
-@rem  Gradle startup script for Windows
+@rem  gradlew startup script for Windows
 @rem
 @rem ##########################################################################
 
+@set JAVA_HOME=D:\Android\Android Studio\jbr
+@set PATH=%JAVA_HOME%\bin;%PATH%
+
 @rem Set local scope for the variables with windows NT shell
 if "%OS%"=="Windows_NT" setlocal
+
 
 set DIRNAME=%~dp0
 if "%DIRNAME%"=="" set DIRNAME=.

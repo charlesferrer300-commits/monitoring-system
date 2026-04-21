@@ -29,11 +29,15 @@ export class DeviceMonitorService {
   ]);
 
   private isManualMode = false;
-  private bc = new BroadcastChannel('iot_simulation');
+  private bc: any = null;
 
   constructor(private sirenService: SirenService) {
-    // FIREBASE READY: This is where we will call this.setupFirebaseListeners() in Phase 4
-    this.setupSimulationListener();
+    try {
+      this.bc = new BroadcastChannel('iot_simulation');
+      this.setupSimulationListener();
+    } catch (e) {
+      console.warn('BroadcastChannel not supported in this environment (likely Android WebView). Simulation via external tab disabled.');
+    }
     
     // Auto-update data loop
     setInterval(() => this.updateData(), 3000);
@@ -61,7 +65,8 @@ export class DeviceMonitorService {
   }
 
   private setupSimulationListener() {
-    this.bc.onmessage = (event) => {
+    if (!this.bc) return;
+    this.bc.onmessage = (event: any) => {
       const { type, value } = event.data;
       this.isManualMode = true;
 
