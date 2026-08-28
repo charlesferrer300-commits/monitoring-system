@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'SmartHomeMonitor',
+  appId: 'com.smarthome.app',
+  appName: 'Smart Home App',
   webDir: 'www'
 };
 
