@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build && npx cap sync android",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
@@ -27,6 +27,7 @@
     "@capacitor/haptics": "8.0.2",
     "@capacitor/keyboard": "8.0.3",
     "@capacitor/push-notifications": "^8.0.3",
+    "@capacitor/splash-screen": "^8.0.2",
     "@capacitor/status-bar": "8.0.2",
     "@ionic/angular": "^8.0.0",
     "firebase": "^12.12.0",

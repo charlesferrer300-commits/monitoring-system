@@ -1,0 +1,55 @@
+<ion-content [fullscreen]="true">
+  <main class="app" style="padding-bottom: 20px;">
+    <!-- Header -->
+    <header class="main-header">
+      <div class="user-greeting">
+        <p class="tiny-label">Welcome Back</p>
+        <h1 [style.color]="deviceService.isAlarming() ? 'var(--danger)' : 'var(--text)'">
+          {{ statusGreeting() }}
+        </h1>
+      </div>
+      <div class="system-status">
+        <div class="status-dot" [ngClass]="deviceService.networkHealth() > 90 ? 'green' : 'yellow'"></div>
+        <span>{{ deviceService.networkHealth() > 90 ? 'Connected' : 'Stable' }}</span>
+      </div>
+    </header>
+
+    <div class="tab-content active animate-in" style="padding-top: 15px;">
+      <div class="hero-card">
+        <div class="door-status-display">
+          <div class="pill" [ngClass]="deviceService.isLocked() ? 'green' : 'yellow'">
+            {{ deviceService.isLocked() ? 'Locked' : 'Unlocked' }}
+          </div>
+          <div class="door-frame">
+            <div class="door-panel" [ngClass]="{'unlocked': !deviceService.isLocked()}">
+              <div class="door-handle"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="control-actions" style="display: block;">
+          <button [class]="deviceService.isLocked() ? 'btn-primary full-width' : 'btn-danger full-width'" 
+                  [disabled]="deviceService.isAlarming()" 
+                  [style.opacity]="deviceService.isAlarming() ? 0.5 : 1"
+                  (click)="deviceService.toggleLock()">
+            {{ deviceService.isLocked() ? '🔓 Tap to Unlock' : '🔒 Tap to Lock' }}
+          </button>
+        </div>
+        <p class="hint-text" [style.color]="deviceService.isAlarming() ? 'var(--danger)' : 'var(--text-muted)'">
+          {{ deviceService.isAlarming() ? '⚠️ EMERGENCY UNLOCK ACTIVE. Manual controls disabled.' : (deviceService.isLocked() ? 'The door is currently locked and secure.' : 'The door is open. Please close it when done.') }}
+        </p>
+      </div>
+
+      <div class="quick-stats">
+        <div class="mini-card">
+          <span class="tiny-label">Room Temp</span>
+          <h3>{{ deviceService.temperature().toFixed(1) }}°C</h3>
+        </div>
+        <div class="mini-card">
+          <span class="tiny-label">Humidity</span>
+          <h3>{{ deviceService.humidity() }}%</h3>
+        </div>
+      </div>
+    </div>
+  </main>
+</ion-content>

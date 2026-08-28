@@ -1,24 +1,18 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { DeviceMonitorService } from '../services/device-monitor';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  selector: 'app-climate',
+  templateUrl: './climate.page.html',
+  styleUrls: ['./climate.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, FormsModule]
 })
-export class HomePage {
+export class ClimatePage {
   public deviceService = inject(DeviceMonitorService);
-  public activeTab: string = 'home';
-
-  // Derived Values using Angular Signals (Computed)
-  public statusGreeting = () => {
-    if (this.deviceService.isAlarming()) return 'EMERGENCY: UNLOCKED';
-    return this.deviceService.isLocked() ? 'Home is Secure' : 'Front Door is Open';
-  };
 
   public advice = () => {
     const temp = this.deviceService.temperature();
@@ -36,12 +30,6 @@ export class HomePage {
     if (temp >= 30) return 'var(--warning)';
     return 'var(--text-dim)';
   };
-
-  constructor() {}
-
-  switchTab(tab: string) {
-    this.activeTab = tab;
-  }
 
   // Chart Logic Ported to Angular
   getChartBarStyles(value: number, index: number) {

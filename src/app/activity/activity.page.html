@@ -1,0 +1,21 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar style="--background: var(--bg);">
+    <ion-title style="color: var(--text);">System Activity</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <main class="app" style="padding-top: 20px; padding-bottom: 20px;">
+    <div class="tab-content active" style="display: block;">
+      <div class="card">
+          <h2>Recent Activity</h2>
+          <div class="log-list">
+            <div *ngFor="let log of deviceService.logs()" class="log-item">
+              <div><strong>{{ log.text }}</strong></div>
+              <div class="stamp" style="color: var(--text-dim); font-size: 11px;">{{ log.time }}</div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </main>
+</ion-content>

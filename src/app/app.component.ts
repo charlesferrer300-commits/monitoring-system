@@ -1,7 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import { NgIf } from '@angular/common';
 import { NotificationService } from './services/notification';
+import { SplashScreen } from '@capacitor/splash-screen';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-root',
@@ -12,14 +14,19 @@ import { NotificationService } from './services/notification';
 })
 export class AppComponent implements OnInit {
   private notificationService = inject(NotificationService);
-  showSplash = true;
+  showSplash = signal(true);
 
   constructor() {}
 
   async ngOnInit() {
-    // Hide splash screen after 2.5 seconds to allow animation to play
+    // Hide the native splash screen ONLY AFTER Angular is ready
+    if (Capacitor.isNativePlatform()) {
+      await SplashScreen.hide();
+    }
+
+    // Hide web splash screen after 2.5 seconds to allow CSS animation to play
     setTimeout(() => {
-      this.showSplash = false;
+      this.showSplash.set(false);
     }, 2500);
 
     // Initialize Native Notifications on App Start

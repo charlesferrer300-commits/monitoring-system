@@ -38,13 +38,10 @@
 /* Ensure ion-content background is transparent to show our body/main bg */
 ion-content {
   --background: var(--bg);
-  height: 100%;
 }
 
 .app {
-    padding-bottom: calc(110px + env(safe-area-inset-bottom)); 
     background: var(--bg);
-    min-height: 101%; /* Force a bit of extra height to ensure scrollability */
 }
 
 /* Header Port */
@@ -205,18 +202,12 @@ button:active { transform: scale(0.96); }
 
 /* Fixed Tab Bar Port */
 .tab-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
     height: calc(85px + env(safe-area-inset-bottom));
     background: rgba(15, 27, 45, 0.98);
     backdrop-filter: blur(15px);
-    border-top: 1px solid var(--border);
     display: flex;
     justify-content: space-around;
     padding: 10px 10px calc(25px + env(safe-area-inset-bottom)) 10px;
-    z-index: 1000;
 }
 
 .tab-btn {
