@@ -1,3 +1,12 @@
 <ion-app>
+  <!-- Animated Web Splash Screen Intro -->
+  <div class="web-splash-screen" *ngIf="showSplash">
+    <div class="splash-content">
+      <!-- We can use the generated icon SVG inline or via img tag -->
+      <img src="assets/logo.svg" alt="Smart Home App Logo" class="splash-logo" />
+      <h1 class="splash-title">Smart Home</h1>
+    </div>
+  </div>
+
   <ion-router-outlet></ion-router-outlet>
 </ion-app>

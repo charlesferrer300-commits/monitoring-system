@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { PushNotifications } from '@capacitor/push-notifications';
+import { Capacitor } from '@capacitor/core';
 import { DeviceMonitorService } from './device-monitor';
 
 @Injectable({
@@ -11,6 +12,12 @@ export class NotificationService {
   constructor() {}
 
   async init() {
+    // Push notifications only work on physical iOS/Android devices
+    if (Capacitor.getPlatform() === 'web') {
+      console.log('Web platform detected: Push notifications initialized in mock mode.');
+      return;
+    }
+
     // Request permission to use push notifications
     let permStatus = await PushNotifications.checkPermissions();
 
