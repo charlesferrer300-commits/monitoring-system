@@ -45,7 +45,13 @@ export class DeviceMonitorService {
     // Effect to handle siren and body class based on alarm state
     effect(() => {
       if (this.isAlarming()) {
-        this.sirenService.startSiren();
+        let alarmType: 'smoke' | 'temperature' | 'fire' = 'temperature';
+        if (this.smokeActive()) {
+          alarmType = 'smoke';
+        } else if (this.temperature() >= 45) {
+          alarmType = 'fire';
+        }
+        this.sirenService.startSiren(alarmType);
         document.body.classList.add('emergency-mode');
       } else {
         this.sirenService.stopSiren();
